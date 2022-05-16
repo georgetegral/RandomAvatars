@@ -38,14 +38,14 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
     // this limit based on the network that you select, the size of the request,
     // and the processing of the callback request in the fulfillRandomWords()
     // function.
-    uint32 immutable callbackGasLimit = 200000;
+    uint32 immutable callbackGasLimit = 100000;
 
     // The default is 3, but you can set this higher.
     uint16 immutable requestConfirmations = 3;
 
     // For this example, retrieve 2 random values in one request.
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
-    uint32 immutable numWords =  6;
+    uint32 immutable numWords =  1;
 
     address s_owner;
 
@@ -82,19 +82,14 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
         emit RandomnessRequested(requestId);
     }
 
-    function getImageUri(uint256 n0, uint256 n1, uint256 n2, uint256 n3, uint256 n4, uint256 n5) internal pure returns (string memory) {
+    function getImageUri(uint256 num) internal pure returns (string memory) {
         string memory params;
 
         {
             params = string(
                 abi.encodePacked(
                     "https://api.multiavatar.com/",
-                    n0,
-                    n1,
-                    n2,
-                    n3,
-                    n4,
-                    n5,
+                    num,
                     ".svg"
                 )
             );
@@ -131,16 +126,8 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
         uint256[] memory randomNumbers
     ) internal override {
         uint256 current = _idCounter.current();
-        
-        //47 is the last number for our Avatar library
-        uint256 n0 = randomNumbers[0] % 47 + 1;
-        uint256 n1 = randomNumbers[1] % 47 + 1;
-        uint256 n2 = randomNumbers[2] % 47 + 1;
-        uint256 n3 = randomNumbers[3] % 47 + 1;
-        uint256 n4 = randomNumbers[4] % 47 + 1;
-        uint256 n5 = randomNumbers[5] % 47 + 1;
 
-        string memory uri = getImageUri(n0,n1,n2,n3,n4,n5);
+        string memory uri = getImageUri(randomNumbers[0]);
         string memory tokenUri = createTokenUri(Strings.toString(current), uri);
         
         _safeMint(requestToSender[requestId], current);
