@@ -11,6 +11,9 @@
     * [Getting a Chainlink Subscription ID](#Getting-a-Chainlink-subscription-ID)
     * [Deploying the smart contract](#Deploying-the-smart-contract)
     * [Adding the deployed smart contract to VRF Subscription](#Adding-the-deployed-smart-contract-to-VRF-Subscription)
+* [Verify contract in Etherscan](#Verify-contract-in-Etherscan)
+* [Mint NFT](#mint-nft)
+* [Adding contract to Rinkeby OpenSea](#Adding-contract-to-Rinkeby-OpenSea)
 * [Testing](#Testing)
 * [References](#References)
 
@@ -111,6 +114,37 @@ Now that you have the deployed contact address, you can go back to the [Chainlin
 
 After that is done you are ready to use your contract!
 
+## Verify contract in Etherscan
+Even though we will be using a UI to interact with our contract, we are able to use Etherscan to verify our contract and interact with our functions, to do this you have to go to [Rinkeby Etherscan](https://rinkeby.etherscan.io/) and in the search bar input your contract address, after that select the contract tab, and click "Verify and Publish", you will enter a [website to verify your contract](https://rinkeby.etherscan.io/verifyContract), you will need to input your configuration for the project, here's what I used:
+- Please enter the Contract Address you would like to verify: 0x65c4797eE66af314984abE8aC0BB07a6Ff2ce84d
+- Please select Compiler Type: Solidity (Single File)
+- Please select Compiler Version: v0.8.7
+- Please select Open Source License Type: MIT
+
+After that, you will need to input your smart contract as a single file, to do this go to your Hardhat project and run the following command:
+
+```bash
+npx hardhat flatten > Flattened.sol 
+```
+
+After that, you will get a new file named "Flattened.sol", you will copy this file and paste it as the Contract Source Code, but before you do that, go to your "Flattened.sol" file and remove all the license definitions except for the first one.
+
+In my case, I had "SPDX-License-Identifier: MIT", and there where another 16 definitions for the license, you have to remove them all except for the first one.
+
+After doing that, copy and paste your source code, and click "Verify and Publish", you will see a message that the code was successfully verified.
+
+Finally, go back to your contract in Etherscan and in the "Contract" tab, you will see a green checkmark, and 3 new options, "Code", "Read Contract", and "Write Contract".
+
+## Mint NFT
+To test the mint functionality, go to "Write Contract", then select "Connect to Web3", select Metamask, and finally select the "mint" option and click "Write".
+
+The mint will take up to 3 minutes, this is because we make a request to Chainlink for a random number, and it will be served the next Ethereum block, just wait for a bit and you can verify that the Mint was successful.
+
+## Adding contract to Rinkeby OpenSea
+With the NFT minted, we can add our contract to Opensea to see our minted NFTs, to do this, go to [Get Listed on OpenSea Rinkeby](https://testnets.opensea.io/get-listed) and select "Live on a testnet", after that, put your contract address and it will load your NFT collection.
+
+![OpenSea Random Avatars](images/OpenSeaRandomAvatars.png)
+
 ## Testing
 Tests are defined in the test folder
 
@@ -132,3 +166,5 @@ We defined 2 tests that should be passing, but feel free to add more as you wish
 - [Chainlink Verifiable Randomness Function](https://vrf.chain.link/)
 - [Testnet LINK Faucet](https://faucets.chain.link/rinkeby)
 - [Rinkeby Etherscan](https://rinkeby.etherscan.io/)
+- [Rinkeby Etherscan Verify Contract](https://rinkeby.etherscan.io/verifyContract)
+- [OpenSea Rinkeby](https://testnets.opensea.io/get-listed)
