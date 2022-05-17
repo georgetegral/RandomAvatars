@@ -82,7 +82,7 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
         emit RandomnessRequested(requestId);
     }
 
-    function getImageUri(uint256 num) internal pure returns (string memory) {
+    function getImageUri(string memory num) internal pure returns (string memory) {
         string memory params;
 
         {
@@ -98,28 +98,24 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
         return params;
     }
 
-    function createTokenUri(string memory current, string memory uri) internal pure returns(string memory tokenUri) {
+    function createTokenUri(string memory current, string memory _uri) internal pure returns(string memory) {
     
         string memory json = Base64.encode(
         bytes(
             string(
-            abi.encodePacked(
-                '{"tokenId": "',
-                current,
-                '", "description": "Random Avatar NFT Collection Powered by Chainlink VRF, made by Jorge Garcia for the Blockchain Academy Solidity Course", "image": "data:image/svg+xml;base64,',
-                Base64.encode(bytes(uri)),
-                '"}'
-            )
+                abi.encodePacked(
+                    '{"tokenId": "',
+                    current,
+                    '", "description": "Random Avatar NFT Collection Powered by Chainlink VRF, made by Jorge Garcia for the Blockchain Academy Solidity Course", "image": "',
+                    _uri,
+                    '"}'
+                )
             )
         )
         );
 
-        tokenUri = string(
-            abi.encodePacked("data:application/json;base64,", json)
-        );
-
-        return tokenUri;
-  }
+        return string(abi.encodePacked("data:application/json;base64,",json));
+    }
 
     function fulfillRandomWords(
         uint256 requestId,
@@ -127,7 +123,7 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
     ) internal override {
         uint256 current = _idCounter.current();
 
-        string memory uri = getImageUri(randomNumbers[0]);
+        string memory uri = getImageUri(Strings.toString(randomNumbers[0]));
         string memory tokenUri = createTokenUri(Strings.toString(current), uri);
         
         _safeMint(requestToSender[requestId], current);
@@ -135,6 +131,34 @@ contract RandomAvatars is ERC721, ERC721Enumerable, VRFConsumerBaseV2  {
         _idCounter.increment();
     }
 
+    /**
+     * @dev See {IERC721Metadata-tokenURI}.
+     */
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721URIStorage: URI query for nonexistent token");
+
+        string memory _tokenURI = _tokenURIs[tokenId];
+        string memory base = _baseURI();
+
+        // If there is no base URI, return the token URI.
+        if (bytes(base).length == 0) {
+            return _tokenURI;
+        }
+        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
+        if (bytes(_tokenURI).length > 0) {
+            return string(abi.encodePacked(base, _tokenURI));
+        }
+
+        return super.tokenURI(tokenId);
+    }
+
+    /**
+     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
     function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
         require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
         _tokenURIs[tokenId] = _tokenURI;
