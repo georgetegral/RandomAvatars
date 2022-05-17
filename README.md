@@ -11,6 +11,7 @@
     * [Getting a Chainlink Subscription ID](#Getting-a-Chainlink-subscription-ID)
     * [Deploying the smart contract](#Deploying-the-smart-contract)
     * [Adding the deployed smart contract to VRF Subscription](#Adding-the-deployed-smart-contract-to-VRF-Subscription)
+* [Testing](#Testing)
 * [References](#References)
 
 ## Overview
@@ -110,7 +111,19 @@ Now that you have the deployed contact address, you can go back to the [Chainlin
 
 After that is done you are ready to use your contract!
 
+## Testing
+Tests are defined in the test folder
+
+To run them you can run the following command:
+
+```bash
+npx hardhat test
+```
+
+We defined 2 tests that should be passing, but feel free to add more as you wish.
+
 ## References
+- [Multiavatar](https://api.multiavatar.com/)
 - [Node.js](https://nodejs.org/en/download/)
 - [Hardhat](https://hardhat.org/tutorial/creating-a-new-hardhat-project.html)
 - [Metamask Extension Download](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)
